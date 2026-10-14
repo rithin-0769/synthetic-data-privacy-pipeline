@@ -30,8 +30,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Unit & Integration Tests
+        env:
+          PYTHONPATH: .
         run: |
-          pytest tests/ -v
+          python -m pytest tests/ -v
 
       - name: Execute End-to-End Synthetic Pipeline & Privacy Audit
         run: |

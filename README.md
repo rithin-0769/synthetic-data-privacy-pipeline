@@ -1,5 +1,9 @@
 # Synthetic Data Pipelines for Privacy
 
+[![Privacy Pipeline CI/CD](https://github.com/rithin-0769/synthetic-data-privacy-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/rithin-0769/synthetic-data-privacy-pipeline/actions/workflows/ci.yml)
+[![Python 3.10 | 3.11 | 3.12](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Production-grade pipeline that generates high-quality synthetic datasets to replace or augment sensitive real data, preserving mathematical and empirical privacy while retaining downstream predictive utility.
 
 ---

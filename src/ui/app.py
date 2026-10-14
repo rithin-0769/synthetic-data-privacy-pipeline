@@ -128,6 +128,19 @@ with tab_privacy:
             "In a membership inference attack, an adversary tries to guess if an individual record was part of the training set. "
             f"Adversary AUC of **{mia.get('mia_adversary_auc', 0.5)}** is well below the 0.65 threshold, proving zero membership leakage."
         )
+
+        # Download Compliance Audit Certificate
+        html_report_file = "data/output/privacy_compliance_report.html"
+        if os.path.exists(html_report_file):
+            with open(html_report_file, "r", encoding="utf-8") as f:
+                report_html_bytes = f.read().encode("utf-8")
+            st.download_button(
+                label="📄 Download Official Compliance & Audit Certificate (HTML/Printable)",
+                data=report_html_bytes,
+                file_name="privacy_compliance_certificate.html",
+                mime="text/html",
+                use_container_width=True
+            )
     else:
         st.info("Evaluation report not yet generated.")
 

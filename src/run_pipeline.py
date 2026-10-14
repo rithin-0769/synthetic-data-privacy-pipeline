@@ -59,12 +59,18 @@ def run_pipeline(input_csv: str, output_dir: str = "data/output", sample_size: i
     with open(eval_path, "w") as f:
         json.dump(eval_summary, f, indent=2)
 
+    print("      Generating Compliance Audit Report (HTML/PDF)...")
+    from src.validation.report_generator import generate_audit_html_report
+    html_report_path = os.path.join(output_dir, "privacy_compliance_report.html")
+    generate_audit_html_report(eval_path, "data/profile/report.json", html_report_path)
+
     print("\n=== PIPELINE RUN COMPLETE ===")
     print(f"Privacy disclosure distance (mean): {priv_metrics['mean_min_distance_to_real']:.4f}")
     print(f"Exact copies detected: {priv_metrics['exact_copies_detected']}")
     print(f"Downstream Accuracy Retention: {utility_metrics['utility_delta']['accuracy_retention_pct']}%")
     print(f"Membership Inference Adversary AUC: {mia_results['mia_adversary_auc']} (Passed: {mia_results['defense_passed']})")
-    print(f"Evaluation report saved to {eval_path}\n")
+    print(f"Evaluation report saved to {eval_path}")
+    print(f"HTML Compliance Certificate: {html_report_path}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Privacy-Preserving Synthetic Pipeline")

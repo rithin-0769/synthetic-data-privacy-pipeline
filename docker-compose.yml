@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  synthetic-api:
+    build: .
+    container_name: synthetic_privacy_api
+    ports:
+      - "8000:8000"
+    command: uvicorn src.service.api:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  synthetic-dashboard:
+    build: .
+    container_name: synthetic_privacy_dashboard
+    ports:
+      - "8501:8501"
+    command: streamlit run src/ui/app.py --server.port 8501 --server.address 0.0.0.0
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - synthetic-api
+    restart: unless-stopped

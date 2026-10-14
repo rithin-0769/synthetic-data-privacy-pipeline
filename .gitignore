@@ -1,0 +1,30 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local data outputs & caches
+data/output/*.csv
+data/output/*.parquet
+data/output/*.json
+data/profile/*.json
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Streamlit config / cache
+.streamlit/

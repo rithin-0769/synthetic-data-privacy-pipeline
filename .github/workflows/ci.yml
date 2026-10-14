@@ -1,0 +1,60 @@
+name: Privacy Pipeline CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx
+
+      - name: Run Unit & Integration Tests
+        run: |
+          pytest tests/ -v
+
+      - name: Execute End-to-End Synthetic Pipeline & Privacy Audit
+        run: |
+          python -m src.run_pipeline --input data/raw/train.csv --output_dir data/output --samples 25 --model ctgan
+
+      - name: Verify Privacy Audit Report
+        run: |
+          python -c "
+          import json
+          with open('data/output/evaluation_report.json') as f:
+              report = json.load(f)
+          copies = report['privacy_metrics']['exact_copies_detected']
+          mia_pass = report['privacy_attacks']['membership_inference_attack']['defense_passed']
+          print(f'Copies leaked: {copies}, MIA defense passed: {mia_pass}')
+          assert copies == 0, 'Privacy leak detected: exact copies found!'
+          assert mia_pass, 'Privacy failure: membership inference attack threshold breached!'
+          print('CI Privacy Verification Passed Successfully!')
+          "
+
+      - name: Upload Synthetic Dataset & Audit Report Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-audit-report-py${{ matrix.python-version }}
+          path: |
+            data/output/synthetic_churn_data.csv
+            data/output/evaluation_report.json

@@ -23,6 +23,16 @@ st.markdown(
     "and Gaussian Copulas with zero sensitive attribute leakage."
 )
 
+# Auto-initialize a baseline synthetic dataset on fresh cloud deployment if none exists
+if not os.path.exists(SYNTH_PATH) and os.path.exists(RAW_PATH):
+    with st.spinner("Initializing first-run baseline synthetic dataset..."):
+        run_pipeline(
+            input_csv=RAW_PATH,
+            output_dir="data/output",
+            sample_size=30,
+            model_type="copula"
+        )
+
 # Sidebar controls
 st.sidebar.header("⚙️ Generation Parameters")
 model_type = st.sidebar.selectbox("Generative Model", ["ctgan", "copula"], help="CTGAN with DP noise injection or Gaussian Copula")
